@@ -17,21 +17,21 @@ public class Task {
                 if (!(s = s.trim()).isEmpty()) {
                     String[] strings = s.split("/");
                     if (strings.length < 3) {
-                        System.out.println("Строка " + s + " имеет неверное количество слов");
+                        System.out.println(s + " - имеет неверное количество символов");
                         continue;
                     }
                     if (!(strings[0].matches(regex) && strings[2].matches(regex))) {
-                        System.out.println("Строка " + s + " неверный формат ввода");
+                        System.out.println(s + " - неверный формат ввода");
                         continue;
                     }
                     if (!strings[1].matches("\\d{5}(\\.\\d{1,2})?")) {
-                        System.out.println("Строка " + s + " некорректный вод цифр, знаков");
+                        System.out.println(s + " - некорректный вод цифр, знаков");
                         continue;
                     }
                     Employee emp = new Employee(strings[0], new BigDecimal(strings[1]));
                     Department dep = new Department(strings[2]);
                     dep.addEmployee(emp);
-                    System.out.println("Строка " + strings[0] + " " + strings[1] + " " + strings[2] + " - корректна, обрабатываем");
+                    System.out.println(strings[0] + " " + strings[1] + " " + strings[2] + " - корректна, обрабатываем");
                 }
             }
             br.close();

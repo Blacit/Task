@@ -1,3 +1,4 @@
+import java.math.BigDecimal;
 import java.util.List;
 
 public class Department {
@@ -30,6 +31,6 @@ public class Department {
     }
 
     public void addEmployee(Employee emp) {
-        this.name = name;
+        employeeList.add(emp);
     }
 }
