@@ -13,15 +13,21 @@ public class Department {
         name = string;
     }
 
-    public List<Employee> getEmployeeList() { return employeeList; }
+    public List<Employee> getEmployeeList() {
+        return employeeList;
+    }
 
     public void setEmployeeList(List<Employee> employeeList) {
         this.employeeList = employeeList;
     }
 
-    public String getName() { return name; }
+    public String getName() {
+        return name;
+    }
 
-    public void setName(String name) { this.name = name; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public void addEmployee(Employee emp) {
         this.name = name;

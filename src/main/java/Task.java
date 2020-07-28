@@ -19,7 +19,7 @@ public class Task {
                     if (strings.length < 3) {
                         System.out.println("Строка " + s + " имеет неверное количество слов");
                         continue;
-                   }
+                    }
                     if (!(strings[0].matches(regex) && strings[2].matches(regex))) {
                         System.out.println("Строка " + s + " неверный формат ввода");
                         continue;
