@@ -1,4 +1,7 @@
-package innotechum.task1;
+package innotechum.task1.controller;
+import innotechum.task1.entity.Department;
+import innotechum.task1.entity.Employee;
+
 import java.io.*;
 import java.math.BigDecimal;
 
@@ -9,7 +12,7 @@ public class Task implements AutoCloseable{
         String path = args.length > 0 ? args[0] : null;
 
         assert path != null;
-        BufferedReader br =new BufferedReader(new InputStreamReader(new FileInputStream(path),"CP1251"));
+        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(path),"CP1251"));
         try (br) {
             while (true) {
                 String line = br.readLine();
@@ -64,7 +67,7 @@ public class Task implements AutoCloseable{
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
         System.out.println("Читаемый файл закрыт");
     }
 }

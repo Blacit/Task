@@ -1,4 +1,4 @@
-package innotechum.task1;
+package innotechum.task1.entity;
 
 import java.math.BigDecimal;
 

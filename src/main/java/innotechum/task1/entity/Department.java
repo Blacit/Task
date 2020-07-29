@@ -1,4 +1,4 @@
-package innotechum.task1;
+package innotechum.task1.entity;
 
 import java.util.ArrayList;
 import java.util.List;
