@@ -25,7 +25,7 @@ public class Task {
                         continue;
                     }
                     if (!strings[1].matches("\\d{5}(\\.\\d{1,2})?")) {
-                        System.out.println(s + " - некорректный впшвод цифр, знаков");
+                        System.out.println(s + " - некорректный ввод цифр, знаков");
                         continue;
                     }
                     Employee emp = new Employee(strings[0], new BigDecimal(strings[1]));
