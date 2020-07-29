@@ -1,3 +1,6 @@
+package innotechum.task1;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class Department {
@@ -9,8 +12,8 @@ public class Department {
         this.employeeList = employeeList;
     }
 
-    public Department(String string) {
-        name = string;
+    public Department(String name) {
+        this(name, new ArrayList<>());
     }
 
     public List<Employee> getEmployeeList() {
@@ -31,5 +34,13 @@ public class Department {
 
     public void addEmployee(Employee emp) {
         employeeList.add(emp);
+    }
+
+    @Override
+    public String toString() {
+        return "Department{" +
+                "name='" + name + '\'' +
+                ", employeeList=" + employeeList +
+                '}';
     }
 }

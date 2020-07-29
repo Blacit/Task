@@ -1,3 +1,5 @@
+package innotechum.task1;
+
 import java.math.BigDecimal;
 
 public class Employee {
@@ -25,4 +27,5 @@ public class Employee {
     public void setName(String name) {
         this.name = name;
     }
+
 }
