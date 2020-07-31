@@ -14,30 +14,26 @@ public class Task implements AutoCloseable{
         String path = args.length > 0 ? args[0] : null;
 
         assert path != null;
-        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(path),"CP1251"));
-        try (br) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(path), "CP1251")); br) {
             while (true) {
                 String line = br.readLine();
-                if ( line == null )
+                if (line == null)
                     break;
-                if (Check(line) == null) {
-                    continue;
-                } else {
+                if (Check(line) != null) {
                     String[] strings = line.split("/");
                     Employee emp = new Employee(strings[0], new BigDecimal(strings[1]));
                     Department dep = new Department(strings[2]);
 
-                    if(strings[2].equals("Первый")) {
-                            DepEmployee.put(emp, "Первый");
-                    }
-                        else {
+                    if (strings[2].equals("Первый")) {
+                        DepEmployee.put(emp, "Первый");
+                    } else {
                         DepEmployee.put(emp, "Второй");
                     }
-                        dep.addEmployee(emp); // Здесь хранить в виде списка нужна объекты
+                    dep.addEmployee(emp);
                     System.out.println(strings[0] + " " + strings[1] + " " + strings[2] + " - корректна, обрабатываем");
                 }
             }
-            for(Map.Entry<Object, String> entry: DepEmployee.entrySet())
+            for (Map.Entry<Object, String> entry : DepEmployee.entrySet())
                 System.out.println(entry.getKey() + " - " + entry.getValue());
 
             System.out.println("---------------------------");
@@ -50,10 +46,8 @@ public class Task implements AutoCloseable{
             System.out.println("Исправьте путь к файлу, выходите за массив");
         } catch (NullPointerException e) {
             System.out.println("Вы забыли прописать путь к файлу");
-        }
-        finally {
+        } finally {
             System.out.println("Читаемый файл закрыт");
-            br.close();
         }
     }
 
