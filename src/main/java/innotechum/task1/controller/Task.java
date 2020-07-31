@@ -77,4 +77,3 @@ public class Task implements AutoCloseable{
         System.out.println("Читаемый файл закрыт");
     }
 }
-// средняя заработная плата = зп1 сотрудника + зп2 сотрудника / количество сотрудников
