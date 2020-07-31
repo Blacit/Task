@@ -4,10 +4,12 @@ import innotechum.task1.entity.Employee;
 
 import java.io.*;
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Task implements AutoCloseable{
     public static void main(String[] args)  throws IOException{
-        // Хранить строку как MAP
+        Map<Object, String> DepEmployee = new HashMap<>();
 
         String path = args.length > 0 ? args[0] : null;
 
@@ -24,10 +26,20 @@ public class Task implements AutoCloseable{
                     String[] strings = line.split("/");
                     Employee emp = new Employee(strings[0], new BigDecimal(strings[1]));
                     Department dep = new Department(strings[2]);
-                    dep.addEmployee(emp);
+
+                    if(strings[2].equals("Первый")) {
+                            DepEmployee.put(emp, "Первый");
+                    }
+                        else {
+                        DepEmployee.put(emp, "Второй");
+                    }
+                        dep.addEmployee(emp); // Здесь хранить в виде списка нужна объекты
                     System.out.println(strings[0] + " " + strings[1] + " " + strings[2] + " - корректна, обрабатываем");
                 }
             }
+            for(Map.Entry<Object, String> entry: DepEmployee.entrySet())
+                System.out.println(entry.getKey() + " - " + entry.getValue());
+
             System.out.println("---------------------------");
             System.out.println("Выбрали корректные варианты");
             System.out.println("---------------------------");
