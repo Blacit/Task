@@ -1,4 +1,5 @@
 package innotechum.task1.controller;
+
 import innotechum.task1.entity.Department;
 import innotechum.task1.entity.Employee;
 
@@ -7,9 +8,9 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Task implements AutoCloseable{
-    public static void main(String[] args)  throws IOException{
-        Map<Object, String> DepEmployee = new HashMap<>();
+public class Task implements AutoCloseable {
+    public static void main(String[] args) throws IOException {
+        Map<String, Department> departments = new HashMap<>();
 
         String path = args.length > 0 ? args[0] : null;
 
@@ -22,18 +23,14 @@ public class Task implements AutoCloseable{
                 if (Check(line) != null) {
                     String[] strings = line.split("/");
                     Employee emp = new Employee(strings[0], new BigDecimal(strings[1]));
-                    Department dep = new Department(strings[2]);
-
-                    if (strings[2].equals("Первый")) {
-                        DepEmployee.put(emp, "Первый");
-                    } else {
-                        DepEmployee.put(emp, "Второй");
+                    if (!departments.containsKey(strings[2])) {
+                        departments.put(strings[2], new Department(strings[2]));
                     }
-                    dep.addEmployee(emp);
+                    departments.get(strings[2]).addEmployee(emp);
                     System.out.println(strings[0] + " " + strings[1] + " " + strings[2] + " - корректна, обрабатываем");
                 }
             }
-            for (Map.Entry<Object, String> entry : DepEmployee.entrySet())
+            for (Map.Entry<String, Department> entry : departments.entrySet())
                 System.out.println(entry.getKey() + " - " + entry.getValue());
 
             System.out.println("---------------------------");
