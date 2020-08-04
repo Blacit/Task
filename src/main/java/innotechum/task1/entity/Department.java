@@ -1,9 +1,11 @@
 package innotechum.task1.entity;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Department {
+
     private String name;
     private List<Employee> employeeList;
 
@@ -16,7 +18,10 @@ public class Department {
         this(name, new ArrayList<>());
     }
 
-    public List<Employee> getEmployeeList() {
+    public Department() {
+    }
+
+    public  List<Employee> getEmployeeList() {
         return employeeList;
     }
 
@@ -36,7 +41,11 @@ public class Department {
         employeeList.add(emp);
     }
 
-    @Override
+    public Double salaryAvg() {
+        return employeeList.stream().mapToDouble(Employee::getSalary).average().getAsDouble();
+    }
+
+        @Override
     public String toString() {
         return "Department{" +
                 "name='" + name + '\'' +

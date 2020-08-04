@@ -1,22 +1,21 @@
 package innotechum.task1.entity;
 
-import java.math.BigDecimal;
 
 public class Employee {
 
-    private BigDecimal salary;
+    public Double salary;
     private String name;
 
-    public Employee(String name, BigDecimal salary) {
+    public Employee(String name, Double salary) {
         this.name = name;
         this.salary = salary;
     }
 
-    public BigDecimal getSalary() {
+    public Double getSalary() {
         return salary;
     }
 
-    public void setSalary(BigDecimal salary) {
+    public void setSalary(Double salary) {
         this.salary = salary;
     }
 

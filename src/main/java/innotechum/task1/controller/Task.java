@@ -4,11 +4,15 @@ import innotechum.task1.entity.Department;
 import innotechum.task1.entity.Employee;
 
 import java.io.*;
-import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Task implements AutoCloseable {
+
+    public static List<Double> avgEmp = new ArrayList<>();
+
     public static void main(String[] args) throws IOException {
         Map<String, Department> departments = new HashMap<>();
 
@@ -22,7 +26,7 @@ public class Task implements AutoCloseable {
                     break;
                 if (Check(line) != null) {
                     String[] strings = line.split("/");
-                    Employee emp = new Employee(strings[0], new BigDecimal(strings[1]));
+                    Employee emp = new Employee(strings[0], new Double(strings[1]));
                     if (!departments.containsKey(strings[2])) {
                         departments.put(strings[2], new Department(strings[2]));
                     }
@@ -30,12 +34,32 @@ public class Task implements AutoCloseable {
                     System.out.println(strings[0] + " " + strings[1] + " " + strings[2] + " - корректна, обрабатываем");
                 }
             }
-            for (Map.Entry<String, Department> entry : departments.entrySet())
-                System.out.println(entry.getKey() + " - " + entry.getValue());
+            SystemMessage(0);
+            avg(departments);
 
-            System.out.println("---------------------------");
-            System.out.println("Выбрали корректные варианты");
-            System.out.println("---------------------------");
+            List<Double> salarys1 = new ArrayList<>();
+            List<Double> salarys2 = new ArrayList<>();
+            salarys2.addAll(salarys1);
+            for (Map.Entry<String, Department> entry : departments.entrySet()) {
+                String key = entry.getKey();
+                entry.getValue().getEmployeeList().forEach((c) -> salarys1.add(c.getSalary()));
+                if (key.equals("Первый")) {
+                    for (Double number : salarys1) {
+                        System.out.println(number);
+                    }
+                }
+                if (key.equals("Второй")) {
+
+                    //}
+                    SystemMessage(2);
+
+                }
+            }
+            //for (Double number : salarys) {
+            //    System.out.println(number);
+
+            for (Map.Entry<String, Department> entry : departments.entrySet())
+               System.out.println(entry.getKey() + " - " + entry.getValue());
 
         } catch (FileNotFoundException e) {
             System.out.println("Файл не был найден, проверьте путь");
@@ -67,6 +91,35 @@ public class Task implements AutoCloseable {
             return strings;
         }
         return null;
+    }
+
+    public static void SystemMessage(int i) {
+        switch (i) {
+            case 0:
+                System.out.println("---------------------------");
+                System.out.println("Выбрали корректные варианты");
+                System.out.println("---------------------------");
+                break;
+            case 1:
+                System.out.println("------------------------------------------");
+                System.out.println("Посчитали среднюю заработную плату отделов");
+                System.out.println("------------------------------------------");
+                break;
+            case 2:
+                System.out.println("--------------------");
+                System.out.println("Перевели сотрудников");
+                System.out.println("--------------------");
+                break;
+        }
+    }
+
+    public static void avg(Map<String, Department> departments) {
+        for (Map.Entry<String, Department> entry : departments.entrySet()) {
+            Double avg = entry.getValue().salaryAvg();
+            avgEmp.add(avg);
+            System.out.println("Средняя заработная плата отдела " + entry.getKey() + ": " + avg);
+        }
+        SystemMessage(1);
     }
 
     @Override
