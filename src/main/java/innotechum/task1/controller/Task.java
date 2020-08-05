@@ -58,8 +58,8 @@ public class Task implements AutoCloseable {
             //for (Double number : salarys) {
             //    System.out.println(number);
 
-            for (Map.Entry<String, Department> entry : departments.entrySet())
-               System.out.println(entry.getKey() + " - " + entry.getValue());
+            //for (Map.Entry<String, Department> entry : departments.entrySet())
+            //   System.out.println(entry.getKey() + " - " + entry.getValue());
 
         } catch (FileNotFoundException e) {
             System.out.println("Файл не был найден, проверьте путь");
