@@ -12,11 +12,9 @@ import java.util.Map;
 
 public class Task implements AutoCloseable {
 
-    public static List<BigDecimal> avgEmp = new ArrayList<>();
-
     public static void main(String[] args) throws IOException {
         Map<String, Department> departments = new HashMap<>();
-
+        List<BigDecimal> avgEmp = new ArrayList<>();
         String path = args.length > 0 ? args[0] : null;
 
         assert path != null;
@@ -34,7 +32,7 @@ public class Task implements AutoCloseable {
                 }
             }
             systemMessage(0);
-            avg(departments);
+            avg(departments, avgEmp);
 
             String key;
             if (avgEmp.get(0).compareTo(avgEmp.get(1)) > 0) {
@@ -42,64 +40,7 @@ public class Task implements AutoCloseable {
             } else {
                 key = "Второй отдел имеет большую среднюю зп";
             }
-            System.out.println(empswap(departments, key));
-
-            /*List<BigDecimal> temp = new ArrayList<BigDecimal>();
-            BigDecimal sal = new BigDecimal(0);
-                for (Department dep : departments.values()) {
-                    // делаем список зп первого отдела
-                    dep.getEmployeeList().forEach((c) -> temp.add(c.getSalary()));
-                    // открываем первый отдел
-                    if (avgEmp.get(0).compareTo(avgEmp.get(1)) > 0) {
-                        // сверяем зп
-                        if (sal.compareTo(temp.get(0)) < 0){
-                            sal = temp.get(0);
-                    }
-                }
-            }
-            System.out.println(sal);*/
-            // Находим сотрудника в отделе с наибольшей средней зп,
-            // который будет иметь зп между двумя средними отделов
-
-
-
-            /*if (avgEmp.get(0) > avgEmp.get(1)) {
-                for (Department dep : departments.values()) {
-                    if (avgEmployee > departments.values().getEmployeeList(){
-                        Double avgEmployee = dep.salaryAvg();
-                    }
-                    avgEmp.add(avg);
-                    System.out.println("Средняя заработная плата отдела " + dep.getName   () + ": " + avg);
-                }
-            }*/
-
-            //for (Map.Entry<String, Department> entry : departments.entrySet()) {
-            //    if(avgEmployee > entry.getValue().getEmployeeList().forEach((c)));
-            // тут продолжение
-            //}
-
-            /*List<BigDecimal> salarys1 = new ArrayList<>();
-            Double avgEmployee = 0.0;
-            for (Map.Entry<String, Department> entry : departments.entrySet()) {
-                String key = entry.getKey();
-                entry.getValue().getEmployeeList().forEach((c) -> salarys1.add(c.getSalary()));
-                if (key.equals("Первый")) {
-                    for (BigDecimal number : salarys1) {
-                        System.out.println(number);
-                    }
-                }
-                if (key.equals("Второй")) {*/
-
-            //}
-            //systemMessage(2);
-
-            //}
-            //}
-            //for (Double number : salarys) {
-            //    System.out.println(number);
-
-            //for (Map.Entry<String, Department> entry : departments.entrySet())
-            //   System.out.println(entry.getKey() + " - " + entry.getValue());
+            System.out.println(empswap(departments, key, avgEmp));
 
         } catch (FileNotFoundException e) {
             System.out.println("Файл не был найден, проверьте путь");
@@ -153,9 +94,9 @@ public class Task implements AutoCloseable {
         }
     }
 
-    public static BigDecimal empswap(Map<String, Department> departments, String key) {
+    public static BigDecimal empswap(Map<String, Department> departments, String key, List<BigDecimal> avgEmp) {
         BigDecimal sal = new BigDecimal(0);
-        List<BigDecimal> temp = new ArrayList<BigDecimal>();
+        List<BigDecimal> temp = new ArrayList<>();
 
         for (Department dep : departments.values()) {
             if (key.equals("Первый отдел имеет большую среднюю зп") && dep.getName().equals("Первый")) {
@@ -173,8 +114,13 @@ public class Task implements AutoCloseable {
             }
             if (key.equals("Второй отдел имеет большую среднюю зп") && dep.getName().equals("Второй")) {
                 int i = 0;
-                if (temp.get(i).compareTo(avgEmp.get(1)) > 0 && temp.get(i).compareTo(avgEmp.get(0)) > 0) {
-                    sal = temp.get(i);
+                // Сохраняю в List данные о зп первого отдела
+                dep.getEmployeeList().forEach((c) -> temp.add(c.getSalary()));
+                for (BigDecimal number : temp) {
+                    // Ищу макс. зп, которая находится между двух средних зп по отделам
+                    if (temp.get(i).compareTo(avgEmp.get(0)) > 0 && temp.get(i).compareTo(avgEmp.get(1)) > 0) {
+                        sal = temp.get(i);
+                    }
                     i++;
                 }
                 break;
@@ -184,7 +130,7 @@ public class Task implements AutoCloseable {
         return sal;
     }
 
-    public static void avg(Map<String, Department> departments) {
+    public static void avg(Map<String, Department> departments, List<BigDecimal> avgEmp) {
         for (Department dep : departments.values()) {
             BigDecimal avg = dep.salaryAvg();
             avgEmp.add(avg);
