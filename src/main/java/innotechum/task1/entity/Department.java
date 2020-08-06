@@ -18,10 +18,7 @@ public class Department {
         this(name, new ArrayList<>());
     }
 
-    public Department() {
-    }
-
-    public  List<Employee> getEmployeeList() {
+    public List<Employee> getEmployeeList() {
         return employeeList;
     }
 
@@ -41,11 +38,14 @@ public class Department {
         employeeList.add(emp);
     }
 
-    public Double salaryAvg() {
-        return employeeList.stream().mapToDouble(Employee::getSalary).average().getAsDouble();
+    public BigDecimal salaryAvg() {
+        BigDecimal sum = BigDecimal.ZERO;
+        for (Employee employee : employeeList)
+            sum = sum.add(employee.getSalary());
+        return sum.divide(BigDecimal.valueOf(employeeList.size()));
     }
 
-        @Override
+    @Override
     public String toString() {
         return "Department{" +
                 "name='" + name + '\'' +
