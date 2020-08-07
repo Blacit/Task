@@ -35,13 +35,6 @@ public class Task implements AutoCloseable {
             systemMessage(0);
             avg(departments, avgEmp);
 
-            /*String key;
-            if (avgEmp.get(0).compareTo(avgEmp.get(1)) > 0) {
-                key = "Первый отдел имеет большую среднюю зп";
-            } else {
-                key = "Второй отдел имеет большую среднюю зп";
-            }
-            System.out.println(empswap(departments, key, avgEmp));*/
             Departament department1 = departments.get("Первый");
             Departament department2 = departments.get("Второй");
 
@@ -53,12 +46,12 @@ public class Task implements AutoCloseable {
             List<Employee> employeeList  = new ArrayList<>(); // лист, в котором будут храниться сотрудники для перевода
             if (avgEmp.get(0).compareTo(avgEmp.get(1)) > 0) { // если средняя ЗП в первом отделе больше
                 employeeList .addAll(
-                        department1.getEmployeeList().stream() // значит проходим по первому листу и сравниваем
+                        department1.getEmployeeList().stream() // проходим по первому листу и сравниваем
                                 .filter(emp -> emp.getSalary().compareTo(avgEmp.get(0)) < 0 && emp.getSalary().compareTo(avgEmp.get(1)) > 0)
                                 .collect(Collectors.toList()));
             } else if (avgEmp.get(0).compareTo(avgEmp.get(1)) < 0) {
                 employeeList .addAll(
-                        department2.getEmployeeList().stream() // значит проходим по первому листу и сравниваем
+                        department2.getEmployeeList().stream() // проходим по второму листу и сравниваем
                                 .filter(emp -> emp.getSalary().compareTo(avgEmp.get(0)) < 0 && emp.getSalary().compareTo(avgEmp.get(1)) > 0)
                                 .collect(Collectors.toList()));
             } else {
@@ -119,42 +112,6 @@ public class Task implements AutoCloseable {
                 System.out.println("--------------------");
                 break;
         }
-    }
-
-    public static BigDecimal empswap(Map<String, Departament> departments, String key, List<BigDecimal> avgEmp) {
-        BigDecimal sal = new BigDecimal(0);
-        List<BigDecimal> temp = new ArrayList<>();
-
-        for (Departament dep : departments.values()) {
-            if (key.equals("Первый отдел имеет большую среднюю зп") && dep.getName().equals("Первый")) {
-                int i = 0;
-                // Сохраняю в List данные о зп первого отдела
-                dep.getEmployeeList().forEach((c) -> temp.add(c.getSalary()));
-                for (BigDecimal number : temp) {
-                    // Ищу макс. зп, которая находится между двух средних зп по отделам
-                    if (temp.get(i).compareTo(avgEmp.get(0)) > 0 && temp.get(i).compareTo(avgEmp.get(1)) > 0) {
-                        sal = temp.get(i);
-                    }
-                    i++;
-                }
-                break;
-            }
-            if (key.equals("Второй отдел имеет большую среднюю зп") && dep.getName().equals("Второй")) {
-                int i = 0;
-                // Сохраняю в List данные о зп первого отдела
-                dep.getEmployeeList().forEach((c) -> temp.add(c.getSalary()));
-                for (BigDecimal number : temp) {
-                    // Ищу макс. зп, которая находится между двух средних зп по отделам
-                    if (temp.get(i).compareTo(avgEmp.get(0)) > 0 && temp.get(i).compareTo(avgEmp.get(1)) > 0) {
-                        sal = temp.get(i);
-                    }
-                    i++;
-                }
-                break;
-            }
-            //else continue;
-        }
-        return sal;
     }
 
     public static void avg(Map<String, Departament> departments, List<BigDecimal> avgEmp) {
