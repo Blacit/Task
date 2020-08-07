@@ -42,7 +42,7 @@ public class Departament {
         BigDecimal sum = BigDecimal.ZERO;
         for (Employee employee : employeeList)
             sum = sum.add(employee.getSalary());
-        return sum.divide(BigDecimal.valueOf(employeeList.size()));
+        return sum.divide(BigDecimal.valueOf(employeeList.size()), 2);
     }
 
     @Override

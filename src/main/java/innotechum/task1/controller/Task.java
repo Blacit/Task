@@ -45,10 +45,10 @@ public class Task implements AutoCloseable {
             Departament department1 = departments.get("Первый");
             Departament department2 = departments.get("Второй");
 
-            System.out.println(department1); // Department{name='Первый', employeeList=[Employee{salary=15000.13, name='Кошкин'}, Employee{salary=13000.18, name='Петрович Котович Кот'}, Employee{salary=50000, name='Сик'}, Employee{salary=30000.2, name='Сидоров'}, Employee{salary=40000, name='Пушкин'}]}
-            System.out.println(department2); // Department{name='Второй', employeeList=[Employee{salary=10000, name='Петров'}, Employee{salary=30000, name='Петров'}]}
-            System.out.println(avgEmp.get(0)); // 29600.102
-            System.out.println(avgEmp.get(1)); //20000
+            //System.out.println(department1); // Department{name='Первый', employeeList=[Employee{salary=15000.13, name='Кошкин'}, Employee{salary=13000.18, name='Петрович Котович Кот'}, Employee{salary=50000, name='Сик'}, Employee{salary=30000.2, name='Сидоров'}, Employee{salary=40000, name='Пушкин'}]}
+            //System.out.println(department2); // Department{name='Второй', employeeList=[Employee{salary=10000, name='Петров'}, Employee{salary=30000, name='Петров'}]}
+            //System.out.println(avgEmp.get(0)); // 29600.102
+            //System.out.println(avgEmp.get(1)); //20000
 
             List<Employee> employeeList  = new ArrayList<>(); // лист, в котором будут храниться сотрудники для перевода
             if (avgEmp.get(0).compareTo(avgEmp.get(1)) > 0) { // если средняя ЗП в первом отделе больше
