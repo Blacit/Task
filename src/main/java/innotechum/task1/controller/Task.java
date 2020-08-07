@@ -1,6 +1,6 @@
 package innotechum.task1.controller;
 
-import innotechum.task1.entity.Department;
+import innotechum.task1.entity.Departament;
 import innotechum.task1.entity.Employee;
 
 import java.io.*;
@@ -9,11 +9,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Task implements AutoCloseable {
 
     public static void main(String[] args) throws IOException {
-        Map<String, Department> departments = new HashMap<>();
+        Map<String, Departament> departments = new HashMap<>();
         List<BigDecimal> avgEmp = new ArrayList<>();
         String path = args.length > 0 ? args[0] : null;
 
@@ -25,7 +26,7 @@ public class Task implements AutoCloseable {
                     String[] strings = line.split("/");
                     Employee emp = new Employee(strings[0], new BigDecimal(strings[1]));
                     if (!departments.containsKey(strings[2])) {
-                        departments.put(strings[2], new Department(strings[2]));
+                        departments.put(strings[2], new Departament(strings[2]));
                     }
                     departments.get(strings[2]).addEmployee(emp);
                     System.out.println(strings[0] + " " + strings[1] + " " + strings[2] + " - корректна, обрабатываем");
@@ -34,13 +35,30 @@ public class Task implements AutoCloseable {
             systemMessage(0);
             avg(departments, avgEmp);
 
-            String key;
+            /*String key;
             if (avgEmp.get(0).compareTo(avgEmp.get(1)) > 0) {
                 key = "Первый отдел имеет большую среднюю зп";
             } else {
                 key = "Второй отдел имеет большую среднюю зп";
             }
-            System.out.println(empswap(departments, key, avgEmp));
+            System.out.println(empswap(departments, key, avgEmp));*/
+            Departament department1= departments.get("Первый");
+            Departament department2= departments.get("Второй");
+
+            List<Employee> empl = new ArrayList<>(); // лист, в котором будут храниться сотрудники для перевода
+                if (avgEmp.get(0).compareTo(avgEmp.get(1)) > 0) { // если средняя ЗП в первом отделе больше
+                    empl.addAll(
+                        department1.getEmployeeList().stream() // значит проходим по первому листу и сравниваем
+                                .filter(emp -> emp.getSalary().compareTo(avgEmp.get(0)) > 0 && emp.getSalary().compareTo(avgEmp.get(1)) < 0)
+                                .collect(Collectors.toList()));
+            } else if (avgEmp.get(0).compareTo(avgEmp.get(1)) < 0) {
+                    System.out.println("hello");
+            } else {
+                    System.out.println("hello");
+            }
+            for (Employee name : empl) {
+                System.out.println(name);
+            }
 
         } catch (FileNotFoundException e) {
             System.out.println("Файл не был найден, проверьте путь");
@@ -52,7 +70,7 @@ public class Task implements AutoCloseable {
             System.out.println("Читаемый файл закрыт");
         }
     }
-
+            // Есть какие-то правила по порядку написания методов?
     public static boolean check(String line) {
         String regex = "[А-Яа-яЁёA-Za-z\\s]+";
         if (!(line = line.trim()).isEmpty()) {
@@ -94,11 +112,11 @@ public class Task implements AutoCloseable {
         }
     }
 
-    public static BigDecimal empswap(Map<String, Department> departments, String key, List<BigDecimal> avgEmp) {
+    public static BigDecimal empswap(Map<String, Departament> departments, String key, List<BigDecimal> avgEmp) {
         BigDecimal sal = new BigDecimal(0);
         List<BigDecimal> temp = new ArrayList<>();
 
-        for (Department dep : departments.values()) {
+        for (Departament dep : departments.values()) {
             if (key.equals("Первый отдел имеет большую среднюю зп") && dep.getName().equals("Первый")) {
                 int i = 0;
                 // Сохраняю в List данные о зп первого отдела
@@ -130,8 +148,8 @@ public class Task implements AutoCloseable {
         return sal;
     }
 
-    public static void avg(Map<String, Department> departments, List<BigDecimal> avgEmp) {
-        for (Department dep : departments.values()) {
+    public static void avg(Map<String, Departament> departments, List<BigDecimal> avgEmp) {
+        for (Departament dep : departments.values()) {
             BigDecimal avg = dep.salaryAvg();
             avgEmp.add(avg);
             System.out.println("Средняя заработная плата отдела " + dep.getName() + ": " + avg);

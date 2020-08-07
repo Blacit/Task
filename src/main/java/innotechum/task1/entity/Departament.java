@@ -4,17 +4,17 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Department {
+public class Departament {
 
     private String name;
     private List<Employee> employeeList;
 
-    public Department(String name, List<Employee> employeeList) {
+    public Departament(String name, List<Employee> employeeList) {
         this.name = name;
         this.employeeList = employeeList;
     }
 
-    public Department(String name) {
+    public Departament(String name) {
         this(name, new ArrayList<>());
     }
 
