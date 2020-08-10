@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class trash {
+public class Trash {
                 /*List<BigDecimal> temp = new ArrayList<BigDecimal>();
             BigDecimal sal = new BigDecimal(0);
                 for (Department dep : departments.values()) {
@@ -54,6 +54,17 @@ public class trash {
 
     //}
     //systemMessage(2);
+    /* ЗДЕЕССССССССССССССССССССССССССССССССССССССССССССССССССь
+    else if (avgEmp.get(0).compareTo(avgEmp.get(1)) < 0) {
+                        employeeList .addAll(
+                                department2.getEmployeeList().stream() // проходим по второму листу и сравниваем
+                                        .filter(emp -> emp.getSalary().compareTo(avgEmp.get(0)) < 0 && emp.getSalary().compareTo(avgEmp.get(1)) > 0)
+                                        .collect(Collectors.toList()));
+                    } else {
+                        System.out.println("Нет сотрудника для увеличения ср зп");
+                    }
+
+     */
 
     //}
     //}

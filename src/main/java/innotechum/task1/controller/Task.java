@@ -14,13 +14,58 @@ import java.util.stream.Collectors;
 public class Task implements AutoCloseable {
 
     public static void main(String[] args) throws IOException {
+        String DownloadFile = "C:\\Users\\VGilenko\\IdeaProjects\\Task\\src\\main\\resources\\Out.txt";
         Map<String, Departament> departments = new HashMap<>();
-        List<BigDecimal> avgEmp = new ArrayList<>();
         String path = args.length > 0 ? args[0] : null;
 
+        read(path, departments);
+        systemMessage("Выбрали корректные варианты");
+        transferToDepartment(departments, DownloadFile);
+        systemMessage("Перевели из отдела в отдел");
+    }
+
+    public static void transferToDepartment(Map<String, Departament> departments, String downloadFile) {
+        List<String> download = new ArrayList<>();
+        for (Departament depFrom : departments.values()) {
+            for (Departament depTo : departments.values()) {
+                if (depFrom.equals(depTo))
+                    continue;
+                List<Employee> employeeList = new ArrayList<>();
+                List<BigDecimal> newAvgSalary = new ArrayList<>();
+                if (depFrom.salaryAvg().compareTo(depTo.salaryAvg()) > 0) {
+                    employeeList.addAll(
+                            depFrom.getEmployeeList().stream()
+                                    .filter(emp -> emp.getSalary().compareTo(depFrom.salaryAvg()) < 0 && emp.getSalary().compareTo(depTo.salaryAvg()) > 0)
+                                    .collect(Collectors.toList()));
+                }
+                for (Employee employee : employeeList) {
+                    System.out.println("Перевод из " + depFrom.getName() + " в " + depTo.getName() + " сотрудника " + employee.getName() + ". Средняя зп отдела была: " + depFrom.salaryAvg() + " Стала: " + "Новая ср. зп.");
+                    download.add("Перевод из " + depFrom.getName() + " в " + depTo.getName() + " сотрудника " + employee.getName());
+                }
+            }
+        }
+        uploadToFile(download, downloadFile);
+    }
+
+    private static void uploadToFile(List download, String path) {
+        int i = 0;
+        try (FileWriter writer = new FileWriter(path, false)) {
+            while (i < download.size()) {
+                writer.write((String) download.get(i));
+                writer.write('\n');
+                i++;
+            }
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        } finally {
+            System.out.println("Читаемый файл закрыт");
+        }
+    }
+
+    public static void read(String path, Map<String, Departament> departments) throws IOException {
         assert path != null;
         try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(path), "CP1251")); br) {
-            String line; // Как мне объявить line в while
+            String line;
             while ((line = br.readLine()) != null) {
                 if (check(line)) {
                     String[] strings = line.split("/");
@@ -32,35 +77,6 @@ public class Task implements AutoCloseable {
                     System.out.println(strings[0] + " " + strings[1] + " " + strings[2] + " - корректна, обрабатываем");
                 }
             }
-            systemMessage(0);
-            avg(departments, avgEmp);
-
-            Departament department1 = departments.get("Первый");
-            Departament department2 = departments.get("Второй");
-
-            //System.out.println(department1); // Department{name='Первый', employeeList=[Employee{salary=15000.13, name='Кошкин'}, Employee{salary=13000.18, name='Петрович Котович Кот'}, Employee{salary=50000, name='Сик'}, Employee{salary=30000.2, name='Сидоров'}, Employee{salary=40000, name='Пушкин'}]}
-            //System.out.println(department2); // Department{name='Второй', employeeList=[Employee{salary=10000, name='Петров'}, Employee{salary=30000, name='Петров'}]}
-            //System.out.println(avgEmp.get(0)); // 29600.102
-            //System.out.println(avgEmp.get(1)); //20000
-
-            List<Employee> employeeList  = new ArrayList<>(); // лист, в котором будут храниться сотрудники для перевода
-            if (avgEmp.get(0).compareTo(avgEmp.get(1)) > 0) { // если средняя ЗП в первом отделе больше
-                employeeList .addAll(
-                        department1.getEmployeeList().stream() // проходим по первому листу и сравниваем
-                                .filter(emp -> emp.getSalary().compareTo(avgEmp.get(0)) < 0 && emp.getSalary().compareTo(avgEmp.get(1)) > 0)
-                                .collect(Collectors.toList()));
-            } else if (avgEmp.get(0).compareTo(avgEmp.get(1)) < 0) {
-                employeeList .addAll(
-                        department2.getEmployeeList().stream() // проходим по второму листу и сравниваем
-                                .filter(emp -> emp.getSalary().compareTo(avgEmp.get(0)) < 0 && emp.getSalary().compareTo(avgEmp.get(1)) > 0)
-                                .collect(Collectors.toList()));
-            } else {
-                System.out.println("Нет сотрудника для увеличения ср зп");
-            }
-            for (Employee name : employeeList ) {
-                System.out.println(name);
-            }
-
         } catch (FileNotFoundException e) {
             System.out.println("Файл не был найден, проверьте путь");
         } catch (ArrayIndexOutOfBoundsException e) {
@@ -72,8 +88,7 @@ public class Task implements AutoCloseable {
         }
     }
 
-    // Есть какие-то правила по порядку написания методов?
-    public static boolean check(String line) {
+    private static boolean check(String line) {
         String regex = "[А-Яа-яЁёA-Za-z\\s]+";
         if (!(line = line.trim()).isEmpty()) {
             String[] strings = line.split("/");
@@ -85,7 +100,7 @@ public class Task implements AutoCloseable {
                 System.out.println(line + " - неверный формат ввода, нужно: Буквы/Цифры/Буквы");
                 return false;
             }
-            if (!strings[1].matches("\\d{5}(\\.\\d{1,2})?")) {
+            if (!strings[1].matches("\\d+(\\.\\d{1,2})?")) {
                 System.out.println(line + " - некорректный ввод цифр, знаков. Зарплата не может быть отрицательной и иметь меньше 5 знаков");
                 return false;
             }
@@ -94,33 +109,21 @@ public class Task implements AutoCloseable {
         return false;
     }
 
-    public static void systemMessage(int i) {
-        switch (i) {
-            case 0:
-                System.out.println("---------------------------");
-                System.out.println("Выбрали корректные варианты");
-                System.out.println("---------------------------");
-                break;
-            case 1:
-                System.out.println("------------------------------------------");
-                System.out.println("Посчитали среднюю заработную плату отделов");
-                System.out.println("------------------------------------------");
-                break;
-            case 2:
-                System.out.println("--------------------");
-                System.out.println("Перевели сотрудников");
-                System.out.println("--------------------");
-                break;
+    public static void systemMessage(String message) {
+        int line = message.length();
+        int i = 0;
+        while (i <= line) {
+            System.out.print("-");
+            i++;
         }
-    }
-
-    public static void avg(Map<String, Departament> departments, List<BigDecimal> avgEmp) {
-        for (Departament dep : departments.values()) {
-            BigDecimal avg = dep.salaryAvg();
-            avgEmp.add(avg);
-            System.out.println("Средняя заработная плата отдела " + dep.getName() + ": " + avg);
+        System.out.println();
+        System.out.println(message);
+        i = 0;
+        while (i <= line) {
+            System.out.print("-");
+            i++;
         }
-        systemMessage(1);
+        System.out.println();
     }
 
     @Override
