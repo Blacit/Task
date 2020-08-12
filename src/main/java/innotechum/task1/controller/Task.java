@@ -1,10 +1,11 @@
 package innotechum.task1.controller;
 
-import innotechum.task1.entity.Departament;
+import innotechum.task1.entity.Department;
 import innotechum.task1.entity.Employee;
 
 import java.io.*;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +21,7 @@ public class Task implements AutoCloseable {
             return;
         }
 
-        Map<String, Departament> departments = read(args[0]);
+        Map<String, Department> departments = read(args[0]);
         if (!departments.isEmpty()) {
             systemMessage("Выбрали корректные варианты");
             List<String> strList = transferToDepartment(departments);
@@ -29,27 +30,43 @@ public class Task implements AutoCloseable {
         }
     }
 
-    public static List<String> transferToDepartment(Map<String, Departament> departments) {
+    public static List<String> transferToDepartment(Map<String, Department> departments) {
         List<String> download = new ArrayList<>();
-        for (Departament depFrom : departments.values()) {
-            for (Departament depTo : departments.values()) {
+        BigDecimal sum = BigDecimal.ZERO;
+        int i = 0;
+
+        for (Department depFrom : departments.values()) {
+            for (Department depTo : departments.values()) {
                 if (depFrom.equals(depTo))
                     continue;
                 List<Employee> employeeList = new ArrayList<>();
-                List<BigDecimal> newAvgSalary = new ArrayList<>();
                 if (depFrom.salaryAvg().compareTo(depTo.salaryAvg()) > 0) {
                     employeeList.addAll(
                             depFrom.getEmployeeList().stream()
-                                    .filter(emp -> emp.getSalary().compareTo(depFrom.salaryAvg()) < 0 && emp.getSalary().compareTo(depTo.salaryAvg()) > 0)
+                                    .filter(emp -> emp.getSalary().compareTo(depFrom.salaryAvg()) < 0
+                                            && emp.getSalary().compareTo(depTo.salaryAvg()) > 0)
                                     .collect(Collectors.toList()));
                     // Берём лист с зп, одну зп прибавляем к отделу, у которого меньше средняя зп
                     // выясняем сколько работников в отделе, делим сумму на количество работников
                     // Результат сохраняем в newAvgSalary результат
-
                 }
+                if (depFrom.salaryAvg().compareTo(depTo.salaryAvg()) > 0) {
+                    if (employeeList.size() == 0) continue; // Необходимо, если размер равен 0
+                    List<Employee> EmplSecond = depFrom.getEmployeeList(); // создаём для
+                    for (Employee empls : EmplSecond) { // Проходим, чтобы посчитать зп по отделу
+                        sum = sum.add(empls.getSalary()); // Сохраняем информацию в sum
+                    }
+                    sum = sum.add(employeeList.get(i).getSalary()); // Прибавляем зп человека к зп отдела
+                    sum = sum.divide(BigDecimal.valueOf(EmplSecond.size()), 2, RoundingMode.HALF_UP); // Делим сумму на работников
+                    i++;
+                }
+
                 for (Employee employee : employeeList) {
-                    System.out.println("Перевод из " + depFrom.getName() + " в " + depTo.getName() + " сотрудника " + employee.getName() + ". Средняя зп отдела была: " + depFrom.salaryAvg() + " Стала: " + "Новая ср. зп.");
-                    download.add("Перевод из " + depFrom.getName() + " в " + depTo.getName() + " сотрудника " + employee.getName());
+                    System.out.println("Перевод из " + depFrom.getName() + " в " + depTo.getName() +
+                            " сотрудника " + employee.getName() + ". Средняя зп отдела была: " +
+                            depFrom.salaryAvg() + " Стала: " + sum);
+                    download.add("Перевод из " + depFrom.getName() + " в " + depTo.getName() +
+                            " сотрудника " + employee.getName());
                 }
             }
         }
@@ -67,8 +84,8 @@ public class Task implements AutoCloseable {
         }
     }
 
-    public static Map<String, Departament> read(String path) {
-        Map<String, Departament> departments = new HashMap<>();
+    public static Map<String, Department> read(String path) {
+        Map<String, Department> departments = new HashMap<>();
         try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(path), "CP1251")); br) {
             String line;
             while ((line = br.readLine()) != null) {
@@ -76,7 +93,7 @@ public class Task implements AutoCloseable {
                     String[] strings = line.split("/");
                     Employee emp = new Employee(strings[0].trim(), new BigDecimal(strings[1].trim()));
                     if (!departments.containsKey(strings[2].trim())) {
-                        departments.put(strings[2].trim(), new Departament(strings[2]));
+                        departments.put(strings[2].trim(), new Department(strings[2]));
                     }
                     departments.get(strings[2]).addEmployee(emp);
                     System.out.println(strings[0] + " " + strings[1] + " " + strings[2] + " - корректна, обрабатываем");
@@ -85,8 +102,7 @@ public class Task implements AutoCloseable {
             System.out.println("Читаемый файл закрыт");
         } catch (FileNotFoundException e) {
             System.out.println("Файл не был найден, проверьте путь");
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             System.out.println("Ошибка чтения файла");
         }
         return departments;

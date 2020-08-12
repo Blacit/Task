@@ -82,11 +82,11 @@ public class Trash {
             }
             System.out.println(empswap(departments, key, avgEmp));*/
 
-    public static BigDecimal empswap(Map<String, Departament> departments, String key, List<BigDecimal> avgEmp) {
+    public static BigDecimal empswap(Map<String, Department> departments, String key, List<BigDecimal> avgEmp) {
         BigDecimal sal = new BigDecimal(0);
         List<BigDecimal> temp = new ArrayList<>();
 
-        for (Departament dep : departments.values()) {
+        for (Department dep : departments.values()) {
             if (key.equals("Первый отдел имеет большую среднюю зп") && dep.getName().equals("Первый")) {
                 int i = 0;
                 // Сохраняю в List данные о зп первого отдела

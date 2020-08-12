@@ -5,17 +5,17 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Departament {
+public class Department {
 
     private String name;
     private List<Employee> employeeList;
 
-    public Departament(String name, List<Employee> employeeList) {
+    public Department(String name, List<Employee> employeeList) {
         this.name = name;
         this.employeeList = employeeList;
     }
 
-    public Departament(String name) {
+    public Department(String name) {
         this(name, new ArrayList<>());
     }
 
