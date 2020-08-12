@@ -18,10 +18,15 @@ public class Task implements AutoCloseable {
         Map<String, Departament> departments = new HashMap<>();
         String path = args.length > 0 ? args[0] : null;
 
-        read(path, departments);
-        systemMessage("Выбрали корректные варианты");
-        transferToDepartment(departments, DownloadFile);
-        systemMessage("Перевели из отдела в отдел");
+        try {
+            read(path, departments);
+            systemMessage("Выбрали корректные варианты");
+            transferToDepartment(departments, DownloadFile);
+            systemMessage("Перевели из отдела в отдел");
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public static void transferToDepartment(Map<String, Departament> departments, String downloadFile) {
@@ -37,6 +42,7 @@ public class Task implements AutoCloseable {
                             depFrom.getEmployeeList().stream()
                                     .filter(emp -> emp.getSalary().compareTo(depFrom.salaryAvg()) < 0 && emp.getSalary().compareTo(depTo.salaryAvg()) > 0)
                                     .collect(Collectors.toList()));
+
                 }
                 for (Employee employee : employeeList) {
                     System.out.println("Перевод из " + depFrom.getName() + " в " + depTo.getName() + " сотрудника " + employee.getName() + ". Средняя зп отдела была: " + depFrom.salaryAvg() + " Стала: " + "Новая ср. зп.");
@@ -55,10 +61,9 @@ public class Task implements AutoCloseable {
                 writer.write('\n');
                 i++;
             }
+            System.out.println("Читаемый файл закрыт");
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
-        } finally {
-            System.out.println("Читаемый файл закрыт");
         }
     }
 
@@ -77,14 +82,13 @@ public class Task implements AutoCloseable {
                     System.out.println(strings[0] + " " + strings[1] + " " + strings[2] + " - корректна, обрабатываем");
                 }
             }
-        } catch (FileNotFoundException e) {
-            System.out.println("Файл не был найден, проверьте путь");
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.out.println("Исправьте путь к файлу, выходите за массив");
-        } catch (NullPointerException e) {
-            System.out.println("Вы забыли прописать путь к файлу");
-        } finally {
             System.out.println("Читаемый файл закрыт");
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException("Файл не был найден, проверьте путь");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new RuntimeException("Исправьте путь к файлу, выходите за массив");
+        } catch (NullPointerException e) {
+            throw new RuntimeException("Вы забыли прописать путь к файлу");
         }
     }
 
