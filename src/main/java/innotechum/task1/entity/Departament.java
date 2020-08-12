@@ -1,6 +1,7 @@
 package innotechum.task1.entity;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +43,7 @@ public class Departament {
         BigDecimal sum = BigDecimal.ZERO;
         for (Employee employee : employeeList)
             sum = sum.add(employee.getSalary());
-        return sum.divide(BigDecimal.valueOf(employeeList.size()), 2);
+        return sum.divide(BigDecimal.valueOf(employeeList.size()), 2, RoundingMode.HALF_UP);
     }
 
     @Override

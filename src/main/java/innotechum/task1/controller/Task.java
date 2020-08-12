@@ -13,23 +13,23 @@ import java.util.stream.Collectors;
 
 public class Task implements AutoCloseable {
 
-    public static void main(String[] args) throws IOException {
-        String DownloadFile = "C:\\Users\\VGilenko\\IdeaProjects\\Task\\src\\main\\resources\\Out.txt";
-        Map<String, Departament> departments = new HashMap<>();
-        String path = args.length > 0 ? args[0] : null;
+    public static void main(String[] args) {
 
-        try {
-            read(path, departments);
-            systemMessage("Выбрали корректные варианты");
-            transferToDepartment(departments, DownloadFile);
-            systemMessage("Перевели из отдела в отдел");
+        if (args.length != 2) {
+            System.out.println();
+            return;
         }
-        catch (Exception e) {
-            System.out.println(e.getMessage());
+
+        Map<String, Departament> departments = read(args[0]);
+        if (!departments.isEmpty()) {
+            systemMessage("Выбрали корректные варианты");
+            List<String> strList = transferToDepartment(departments);
+            uploadToFile(strList, args[1]);
+            systemMessage("Перевели из отдела в отдел");
         }
     }
 
-    public static void transferToDepartment(Map<String, Departament> departments, String downloadFile) {
+    public static List<String> transferToDepartment(Map<String, Departament> departments) {
         List<String> download = new ArrayList<>();
         for (Departament depFrom : departments.values()) {
             for (Departament depTo : departments.values()) {
@@ -42,6 +42,9 @@ public class Task implements AutoCloseable {
                             depFrom.getEmployeeList().stream()
                                     .filter(emp -> emp.getSalary().compareTo(depFrom.salaryAvg()) < 0 && emp.getSalary().compareTo(depTo.salaryAvg()) > 0)
                                     .collect(Collectors.toList()));
+                    // Берём лист с зп, одну зп прибавляем к отделу, у которого меньше средняя зп
+                    // выясняем сколько работников в отделе, делим сумму на количество работников
+                    // Результат сохраняем в newAvgSalary результат
 
                 }
                 for (Employee employee : employeeList) {
@@ -50,16 +53,13 @@ public class Task implements AutoCloseable {
                 }
             }
         }
-        uploadToFile(download, downloadFile);
+        return download;
     }
 
-    private static void uploadToFile(List download, String path) {
-        int i = 0;
+    private static void uploadToFile(List<String> download, String path) {
         try (FileWriter writer = new FileWriter(path, false)) {
-            while (i < download.size()) {
-                writer.write((String) download.get(i));
-                writer.write('\n');
-                i++;
+            for (String str : download) {
+                writer.write(str + '\n');
             }
             System.out.println("Читаемый файл закрыт");
         } catch (IOException ex) {
@@ -67,16 +67,16 @@ public class Task implements AutoCloseable {
         }
     }
 
-    public static void read(String path, Map<String, Departament> departments) throws IOException {
-        assert path != null;
+    public static Map<String, Departament> read(String path) {
+        Map<String, Departament> departments = new HashMap<>();
         try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(path), "CP1251")); br) {
             String line;
             while ((line = br.readLine()) != null) {
                 if (check(line)) {
                     String[] strings = line.split("/");
-                    Employee emp = new Employee(strings[0], new BigDecimal(strings[1]));
-                    if (!departments.containsKey(strings[2])) {
-                        departments.put(strings[2], new Departament(strings[2]));
+                    Employee emp = new Employee(strings[0].trim(), new BigDecimal(strings[1].trim()));
+                    if (!departments.containsKey(strings[2].trim())) {
+                        departments.put(strings[2].trim(), new Departament(strings[2]));
                     }
                     departments.get(strings[2]).addEmployee(emp);
                     System.out.println(strings[0] + " " + strings[1] + " " + strings[2] + " - корректна, обрабатываем");
@@ -84,12 +84,12 @@ public class Task implements AutoCloseable {
             }
             System.out.println("Читаемый файл закрыт");
         } catch (FileNotFoundException e) {
-            throw new RuntimeException("Файл не был найден, проверьте путь");
-        } catch (ArrayIndexOutOfBoundsException e) {
-            throw new RuntimeException("Исправьте путь к файлу, выходите за массив");
-        } catch (NullPointerException e) {
-            throw new RuntimeException("Вы забыли прописать путь к файлу");
+            System.out.println("Файл не был найден, проверьте путь");
         }
+        catch (IOException e) {
+            System.out.println("Ошибка чтения файла");
+        }
+        return departments;
     }
 
     private static boolean check(String line) {
@@ -100,12 +100,12 @@ public class Task implements AutoCloseable {
                 System.out.println(line + " - неверный формат строки, ожидаем ФИО/10000.12/Департамент");
                 return false;
             }
-            if (!(strings[0].matches(regex) && strings[2].matches(regex))) {
+            if (!(strings[0].trim().matches(regex) && strings[2].trim().matches(regex))) {
                 System.out.println(line + " - неверный формат ввода, нужно: Буквы/Цифры/Буквы");
                 return false;
             }
-            if (!strings[1].matches("\\d+(\\.\\d{1,2})?")) {
-                System.out.println(line + " - некорректный ввод цифр, знаков. Зарплата не может быть отрицательной и иметь меньше 5 знаков");
+            if (!strings[1].trim().matches("\\d+(\\.\\d{1,2})?")) {
+                System.out.println(line + " - некорректный ввод цифр, знаков. Зарплата не может быть отрицательной");
                 return false;
             }
             return true;
@@ -114,20 +114,9 @@ public class Task implements AutoCloseable {
     }
 
     public static void systemMessage(String message) {
-        int line = message.length();
-        int i = 0;
-        while (i <= line) {
-            System.out.print("-");
-            i++;
-        }
-        System.out.println();
+        System.out.println("-".repeat(message.length()));
         System.out.println(message);
-        i = 0;
-        while (i <= line) {
-            System.out.print("-");
-            i++;
-        }
-        System.out.println();
+        System.out.println("-".repeat(message.length()));
     }
 
     @Override
