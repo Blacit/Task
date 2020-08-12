@@ -50,9 +50,21 @@ public class Task implements AutoCloseable {
                     // выясняем сколько работников в отделе, делим сумму на количество работников
                     // Результат сохраняем в newAvgSalary результат
                 }
-                if (depFrom.salaryAvg().compareTo(depTo.salaryAvg()) > 0) {
+                if (depFrom.salaryAvg().compareTo(depTo.salaryAvg()) > 0 && !depFrom.equals(depTo)) {
                     if (employeeList.size() == 0) continue; // Необходимо, если размер равен 0
                     List<Employee> EmplSecond = depFrom.getEmployeeList(); // создаём для
+                    for (Employee empls : EmplSecond) { // Проходим, чтобы посчитать зп по отделу
+                        sum = sum.add(empls.getSalary()); // Сохраняем информацию в sum
+                    }
+                    sum = sum.add(employeeList.get(i).getSalary()); // Прибавляем зп человека к зп отдела
+                    sum = sum.divide(BigDecimal.valueOf(EmplSecond.size()), 2, RoundingMode.HALF_UP); // Делим сумму на работников
+                    i++;
+                }
+                if (depFrom.salaryAvg().compareTo(depTo.salaryAvg()) > 0) {
+                    if (employeeList.size() == 0) continue; // Необходимо, если размер равен 0
+                    List<Employee> EmplSecond = depTo.getEmployeeList(); // создаём для
+                    sum = BigDecimal.ZERO;
+                    i = i - 1;
                     for (Employee empls : EmplSecond) { // Проходим, чтобы посчитать зп по отделу
                         sum = sum.add(empls.getSalary()); // Сохраняем информацию в sum
                     }
