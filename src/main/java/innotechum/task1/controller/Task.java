@@ -17,7 +17,7 @@ public class Task implements AutoCloseable {
     public static void main(String[] args) {
 
         if (args.length != 2) {
-            System.out.println();
+            System.out.println("Не хватает аргументов");
             return;
         }
 
@@ -32,8 +32,6 @@ public class Task implements AutoCloseable {
 
     public static List<String> transferToDepartment(Map<String, Department> departments) {
         List<String> download = new ArrayList<>();
-        BigDecimal sum = BigDecimal.ZERO;
-        int i = 0;
 
         for (Department depFrom : departments.values()) {
             for (Department depTo : departments.values()) {
@@ -49,51 +47,20 @@ public class Task implements AutoCloseable {
                     // Берём лист с зп, одну зп прибавляем к отделу, у которого меньше средняя зп
                     // выясняем сколько работников в отделе, делим сумму на количество работников
                     // Результат сохраняем в newAvgSalary результат
-                }
-                if (depFrom.salaryAvg().compareTo(depTo.salaryAvg()) > 0) {
-                    if (employeeList.size() == 0) continue; // Необходимо, если размер равен 0
-                    List<Employee> EmplSecond = depFrom.getEmployeeList(); // создаём для
-                    for (Employee empls : EmplSecond) { // Проходим, чтобы посчитать зп по отделу
-                        sum = sum.add(empls.getSalary()); // Сохраняем информацию в sum
-                    }
-                    sum = sum.add(employeeList.get(i).getSalary()); // Прибавляем зп человека к зп отдела
-                    sum = sum.divide(BigDecimal.valueOf(EmplSecond.size()), 2, RoundingMode.HALF_UP); // Делим сумму на работников
-                    i++;
-                    for (Employee employee : employeeList) {
+                    //BigDecimal totalSalFrom = depFrom.getTotalSalary(depFrom);
+                    //BigDecimal totalSalTo = depFrom.getTotalSalary(depTo);
+                    for(Employee employee : employeeList) {
+                        List<Employee> EmplSecond = depFrom.getEmployeeList();
+                        BigDecimal totalSalFrom = depFrom.getTotalSalary(depFrom);
+                        totalSalFrom = totalSalFrom.add(employee.getSalary());
+                        totalSalFrom = totalSalFrom.divide(BigDecimal.valueOf(EmplSecond.size()), 2, RoundingMode.HALF_UP); // Не то кол-во сотрудников
                         System.out.println("Перевод из " + depFrom.getName() + " в " + depTo.getName() +
                                 " сотрудника " + employee.getName() + ". Средняя зп отдела была: " +
-                                depFrom.salaryAvg() + " Стала: " + sum);
+                                depFrom.salaryAvg() + " Стала: " + totalSalFrom);
                         download.add("Перевод из " + depFrom.getName() + " в " + depTo.getName() +
                                 " сотрудника " + employee.getName());
                     }
                 }
-                if (depFrom.salaryAvg().compareTo(depTo.salaryAvg()) < 0) {
-                    if (employeeList.size() == 0) continue; // Необходимо, если размер равен 0
-                    List<Employee> EmplSecond = depTo.getEmployeeList(); // создаём для
-                    sum = BigDecimal.ZERO;
-                    i = 0;
-                    for (Employee empls : EmplSecond) { // Проходим, чтобы посчитать зп по отделу
-                        sum = sum.add(empls.getSalary()); // Сохраняем информацию в sum
-                    }
-                    sum = sum.add(employeeList.get(i).getSalary()); // Прибавляем зп человека к зп отдела
-                    sum = sum.divide(BigDecimal.valueOf(EmplSecond.size()), 2, RoundingMode.HALF_UP); // Делим сумму на работников
-                    for (Employee employee : employeeList) {
-                        System.out.println("Перевод из " + depTo.getName() + " в " + depFrom.getName() +
-                                " сотрудника " + employee.getName() + ". Средняя зп отдела была: " +
-                                depTo.salaryAvg() + " Стала: " + sum);
-                        download.add("Перевод из " + depTo.getName() + " в " + depTo.getName() +
-                                " сотрудника " + employee.getName());
-                    }
-                    i++;
-                }
-
-                /*for (Employee employee : employeeList) {
-                    System.out.println("Перевод из " + depFrom.getName() + " в " + depTo.getName() +
-                            " сотрудника " + employee.getName() + ". Средняя зп отдела была: " +
-                            depFrom.salaryAvg() + " Стала: " + sum);
-                    download.add("Перевод из " + depFrom.getName() + " в " + depTo.getName() +
-                            " сотрудника " + employee.getName());
-                }*/
             }
         }
         return download;
@@ -119,9 +86,9 @@ public class Task implements AutoCloseable {
                     String[] strings = line.split("/");
                     Employee emp = new Employee(strings[0].trim(), new BigDecimal(strings[1].trim()));
                     if (!departments.containsKey(strings[2].trim())) {
-                        departments.put(strings[2].trim(), new Department(strings[2]));
+                        departments.put(strings[2].trim(), new Department(strings[2].trim()));
                     }
-                    departments.get(strings[2]).addEmployee(emp);
+                    departments.get(strings[2].trim()).addEmployee(emp);
                     System.out.println(strings[0] + " " + strings[1] + " " + strings[2] + " - корректна, обрабатываем");
                 }
             }

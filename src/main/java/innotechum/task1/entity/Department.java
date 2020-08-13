@@ -46,6 +46,15 @@ public class Department {
         return sum.divide(BigDecimal.valueOf(employeeList.size()), 2, RoundingMode.HALF_UP);
     }
 
+    public BigDecimal getTotalSalary(Department dep) {
+        BigDecimal sum = BigDecimal.ZERO;
+        List<Employee> EmplSecond = dep.getEmployeeList();
+        for (Employee empls : EmplSecond) { // Проходим, чтобы посчитать зп по отделу
+            sum = sum.add(empls.getSalary()); // Сохраняем информацию в sum
+        }
+        return sum;
+    }
+
     @Override
     public String toString() {
         return "Department{" +
