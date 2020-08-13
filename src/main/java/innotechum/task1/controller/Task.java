@@ -37,18 +37,10 @@ public class Task implements AutoCloseable {
             for (Department depTo : departments.values()) {
                 if (depFrom.equals(depTo))
                     continue;
-                List<Employee> employeeList = new ArrayList<>();
                 if (depFrom.salaryAvg().compareTo(depTo.salaryAvg()) > 0) {
-                    employeeList.addAll(
-                            depFrom.getEmployeeList().stream()
-                                    .filter(emp -> emp.getSalary().compareTo(depFrom.salaryAvg()) < 0
-                                            && emp.getSalary().compareTo(depTo.salaryAvg()) > 0)
-                                    .collect(Collectors.toList()));
-                    // Берём лист с зп, одну зп прибавляем к отделу, у которого меньше средняя зп
-                    // выясняем сколько работников в отделе, делим сумму на количество работников
-                    // Результат сохраняем в newAvgSalary результат
-                    //BigDecimal totalSalFrom = depFrom.getTotalSalary(depFrom);
-                    //BigDecimal totalSalTo = depFrom.getTotalSalary(depTo);
+                    List<Employee> employeeList = depFrom.getEmployeeList().stream()
+                            .filter(emp -> emp.getSalary().compareTo(depFrom.salaryAvg()) < 0
+                                    && emp.getSalary().compareTo(depTo.salaryAvg()) > 0).collect(Collectors.toList());
                     for(Employee employee : employeeList) {
                         List<Employee> EmplSecond = depFrom.getEmployeeList();
                         BigDecimal totalSalFrom = depFrom.getTotalSalary(depFrom);
